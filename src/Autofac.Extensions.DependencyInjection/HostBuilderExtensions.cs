@@ -25,24 +25,21 @@
 
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Autofac.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Extension methods on <see cref="IServiceCollection"/> to register the <see cref="IServiceProviderFactory{TContainerBuilder}"/>.
+    /// Extension methods on <see cref="IHostBuilder"/> to register the <see cref="IServiceProviderFactory{TContainerBuilder}"/>.
     /// </summary>
-    public static class ServiceCollectionExtensions
+    public static class HostBuilderExtensions
     {
         /// <summary>
-        /// Adds the <see cref="AutofacServiceProviderFactory"/> to the service collection.
+        /// Register the <see cref="AutofacServiceProviderFactory" /> with the Host.
         /// </summary>
-        /// <param name="services">The service collection to add the factory to.</param>
+        /// <param name="hostBuilder">The instance of the <see cref="IHostBuilder"/>.</param>
         /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/> that adds component registrations to the container.</param>
-        /// <returns>The service collection.</returns>
-        [Obsolete("Please use Autofac.Extensions.DependencyInjection.UseAutofac(...) instead", false)]
-        public static IServiceCollection AddAutofac(this IServiceCollection services, Action<ContainerBuilder> configurationAction = null)
-        {
-            return services.AddSingleton<IServiceProviderFactory<ContainerBuilder>>(new AutofacServiceProviderFactory(configurationAction));
-        }
+        public static IHostBuilder UseAutofac(this IHostBuilder hostBuilder, Action<ContainerBuilder> configurationAction = null) =>
+            hostBuilder.UseServiceProviderFactory(new AutofacServiceProviderFactory(configurationAction));
     }
 }
